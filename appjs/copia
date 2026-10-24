@@ -1,0 +1,177 @@
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  StyleSheet
+} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
+
+
+const cursos = [
+  {
+    id: '1',
+    nombre: 'React Native',
+    horas: 20,
+    docente: 'Ana Martínez',
+    descripcion: 'Desarrollo de aplicaciones móviles multiplataforma.'
+  },
+  {
+    id: '2',
+    nombre: 'Bases de datos',
+    horas: 16,
+    docente: 'Carlos Pérez',
+    descripcion: 'Gestión y consulta de información estructurada.'
+  },
+  {
+    id: '3',
+    nombre: 'Marketing Digital',
+    horas: 12,
+    docente: 'Lucía Gómez',
+    descripcion: 'Estrategias digitales para productos y servicios.'
+  },
+  {
+    id: '4',
+    nombre: 'Diseño Web',
+    horas: 18,
+    docente: 'Mario Rivas',
+    descripcion: 'Diseño de interfaces y sitios web responsivos.'
+  },
+  {
+    id: '5',
+    nombre: 'Redes de Computadoras',
+    horas: 14,
+    docente: 'Elena Torres',
+    descripcion: 'Fundamentos de comunicación y configuración de redes.'
+  },
+  {
+    id: '6',
+    nombre: 'Programación Web',
+    horas: 22,
+    docente: 'Jorge Ruiz',
+    descripcion: 'Desarrollo de sitios y aplicaciones con HTML, CSS y JavaScript.'
+  }
+];
+
+function CursoItem({ curso, onPress }) {
+  return (
+    <Pressable style={styles.item} onPress={onPress}>
+      <Text style={styles.nombre}>{curso.nombre}</Text>
+      <Text style={styles.horas}>{curso.horas} horas</Text>
+    </Pressable>
+  );
+}
+
+function InicioScreen({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.titulo}>Lista de cursos</Text>
+
+      <FlatList
+        data={cursos}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <CursoItem
+            curso={item}
+            onPress={() =>
+              navigation.navigate('Detalle', {
+                nombre: item.nombre,
+                horas: item.horas,
+                docente: item.docente, // RETO: se envía el docente
+                descripcion: item.descripcion
+              })
+            }
+          />
+        )}
+      />
+    </View>
+  );
+}
+
+function DetalleScreen({ route }) {
+  // RETO: se recibe también el docente
+  const { nombre, horas, docente, descripcion } = route.params;
+
+  return (
+    <View style={styles.detalle}>
+      <Text style={styles.tituloDetalle}>{nombre}</Text>
+      <Text style={styles.textoDetalle}>Duración: {horas} horas</Text>
+      <Text style={styles.textoDetalle}>Docente: {docente}</Text>
+      <Text style={styles.descripcion}>{descripcion}</Text>
+    </View>
+  );
+}
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Inicio">
+        <Stack.Screen
+          name="Inicio"
+          component={InicioScreen}
+          options={{ title: 'Cursos' }}
+        />
+        <Stack.Screen
+          name="Detalle"
+          component={DetalleScreen}
+          options={{ title: 'Detalle del curso' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+// RETO: estilos cambiados respecto al original (marcados con "CAMBIO")
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 18,
+    backgroundColor: '#EAF4F8', // CAMBIO: fondo más azulado
+  },
+  titulo: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#0D4E65',
+  },
+  item: {
+    backgroundColor: 'white',
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 16, // CAMBIO: bordes más redondeados
+    borderWidth: 1,
+    borderColor: '#D6E1E8',
+  },
+  nombre: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  horas: {
+    fontSize: 14,
+    marginTop: 5,
+    color: '#5C6974',
+  },
+  detalle: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: '#EAF4F8', // CAMBIO: mismo fondo que la lista
+  },
+  tituloDetalle: {
+    fontSize: 30, // CAMBIO: título más grande
+    fontWeight: 'bold',
+    color: '#0D4E65',
+    marginBottom: 18,
+  },
+  textoDetalle: {
+    fontSize: 17,
+    marginBottom: 12,
+  },
+  descripcion: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
+});
+
